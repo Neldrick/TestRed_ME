@@ -1,0 +1,11 @@
+C:\Users\Neldrick\Documents\NetCore\TestRed_ME\bin\Debug\netcoreapp2.0\TestRed_ME.deps.json
+C:\Users\Neldrick\Documents\NetCore\TestRed_ME\bin\Debug\netcoreapp2.0\TestRed_ME.runtimeconfig.json
+C:\Users\Neldrick\Documents\NetCore\TestRed_ME\bin\Debug\netcoreapp2.0\TestRed_ME.runtimeconfig.dev.json
+C:\Users\Neldrick\Documents\NetCore\TestRed_ME\bin\Debug\netcoreapp2.0\TestRed_ME.dll
+C:\Users\Neldrick\Documents\NetCore\TestRed_ME\bin\Debug\netcoreapp2.0\TestRed_ME.pdb
+C:\Users\Neldrick\Documents\NetCore\TestRed_ME\obj\Debug\netcoreapp2.0\TestRed_ME.csprojResolveAssemblyReference.cache
+C:\Users\Neldrick\Documents\NetCore\TestRed_ME\obj\Debug\netcoreapp2.0\TestRed_ME.csproj.CoreCompileInputs.cache
+C:\Users\Neldrick\Documents\NetCore\TestRed_ME\obj\Debug\netcoreapp2.0\TestRed_ME.AssemblyInfoInputs.cache
+C:\Users\Neldrick\Documents\NetCore\TestRed_ME\obj\Debug\netcoreapp2.0\TestRed_ME.AssemblyInfo.cs
+C:\Users\Neldrick\Documents\NetCore\TestRed_ME\obj\Debug\netcoreapp2.0\TestRed_ME.dll
+C:\Users\Neldrick\Documents\NetCore\TestRed_ME\obj\Debug\netcoreapp2.0\TestRed_ME.pdb
