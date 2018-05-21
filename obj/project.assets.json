@@ -12649,33 +12649,28 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Neldrick\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "/home/neldrick/.nuget/packages/": {},
+    "/usr/share/dotnet/sdk/NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Neldrick\\Documents\\NetCore\\TestRed_ME\\TestRed_ME.csproj",
+      "projectUniqueName": "/home/neldrick/TestRed_ME/TestRed_ME.csproj",
       "projectName": "TestRed_ME",
-      "projectPath": "C:\\Users\\Neldrick\\Documents\\NetCore\\TestRed_ME\\TestRed_ME.csproj",
-      "packagesPath": "C:\\Users\\Neldrick\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Neldrick\\Documents\\NetCore\\TestRed_ME\\obj\\",
+      "projectPath": "/home/neldrick/TestRed_ME/TestRed_ME.csproj",
+      "packagesPath": "/home/neldrick/.nuget/packages/",
+      "outputPath": "/home/neldrick/TestRed_ME/obj/",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\",
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        "/usr/share/dotnet/sdk/NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\Neldrick\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.Fallback.config"
+        "/home/neldrick/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

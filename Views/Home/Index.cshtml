@@ -1,160 +1,505 @@
-﻿<!DOCTYPE html>  
-<html>  
-<head>  
-    <meta charset="utf-8" />  
-    <title></title>  
-    <style>  
-        table {  
-            border: 0  
-        }  
-  
-        .commslog-data {  
-            font-family: Consolas, Courier New, Courier, monospace;  
-        }  
-  
-        .commslog-server {  
-            background-color: red;  
-            color: white  
-        }  
-  
-        .commslog-client {  
-            background-color: green;  
-            color: white  
-        }  
-    </style>  
-</head>  
-<body>  
-    <h1>WebSocket Sample Application</h1>  
-    <p id="stateLabel">Ready to connect...</p>  
-    <div>  
-        <label for="connectionUrl">WebSocket Server URL:</label>  
-        <input id="connectionUrl" />  
-        <button id="connectButton" type="submit">Connect</button>  
-    </div>  
-    <p></p>  
-    <div>  
-        <label for="sendMessage">Message to send:</label>  
-        <input id="sendMessage" disabled />  
-        <button id="sendButton" type="submit" disabled>Send</button>  
-        <button id="closeButton" disabled>Close Socket</button>  
-    </div>  
-    <h2>Communication Log</h2>  
-    <table style="width: 800px">  
-        <thead>  
-            <tr>  
-                <td style="width: 100px">From</td>  
-                <td style="width: 100px">To</td>  
-                <td>Data</td>  
-            </tr>  
-        </thead>  
-        <tbody id="commsLog"></tbody>  
-    </table>  
+﻿<style>
+    .bidaskcontainer .table thead th{
+        width:75px;
+        text-align: center;
+    }
+    .bidaskcontainer .table{
+        table-layout: fixed;
+        word-wrap: break-word;
+    }
+    .dealContainer .table{
+        width:750px;
+           table-layout: fixed;
+    }
+    .dealContainer .table tr td{
+        width:70px;
+        text-align: center;
+    }
+    .bidaskcontainer .table{
+        width:750px;
+    }
+    #dealText{
+        height:250px;
+        width:180px;
+    }
+
+    .marketContainer{
+        display:none;
+    }
+    .cancelContainer{
+        display: none;
+    }
+    .orderPlacing input{
+        width:150px;
+    }
+ 
+</style>
+<div class="dataContainer" style="padding-top:50px;width:752px;">
+
+<div class="dealContainer"  >
+    <table class= "table">
+        <tr>                 
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td style="width:200px;"><textarea id="dealText"></textarea></td>
+            <td style="width:280px;">
+                <div class="orderPlacing">
+                    <div style="padding-bottom: 20px;">
+                        <select id="inputtypeselect" onchange="changeInputType()">
+                            <option value="limited">limited</option>
+                            <option value="market">market</option>
+                             <option value="cancel">cancel</option>
+                        </select>
+                    </div>
+                    <div class="limitedContainer">
+                        <div calss = "row" style="overflow:hidden;">
+                            <div class = "col-xs-4">
+                                <label>Price:</label>
+                            </div>
+                            <div class = "col-xs-8">
+                                <input type="text" id="limitedOrderPrice"/>
+                            </div>
+                            
+                        </div>
+                        <div calss = "row" style="overflow:hidden;padding-top:20px;">
+                            <div class = "col-xs-4">
+                                <label>Amount:</label>
+                            </div>
+                            <div class = "col-xs-8">
+                                <input type="text" id="limitedOrderAmount"/>
+                            </div>
+                            
+                        </div>
+                        <div calss = "row" style="overflow:hidden;padding-top:20px;">
+                            <div class = "col-xs-4">
+                                 <input type="checkbox" id="requireId">Require Id?
+                            </div>
+                            <div class = "col-xs-8">
+                                
+                            </div>
+                            
+                        </div>
+                        <div class="row" style="overflow:hidden;padding-top:20px;">
+                            <div class="col-xs-6">
+                            <div class="btn-primary" onclick="limitedOrder(0)">Buy</div>
+                            </div>                            
+                            <div class="col-xs-6">
+                            <div class="btn-danger"  onclick="limitedOrder(1)">Sell</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="marketContainer">
+                        
+                         <div calss = "row" style="overflow:hidden;">
+                            <div class = "col-xs-4">
+                                <label>Amount:</label>
+                            </div>
+                            <div class = "col-xs-8">
+                                <input type="text" id="marketOrderAmount"/>
+                            </div>
+                            
+                        </div>
+                         <div class="row" style="overflow:hidden;padding-top:20px;">
+                            <div class="col-xs-6">
+                            <div class="btn-primary" onclick="marketOrder(0)">Buy</div>
+                            </div>
+                            <div class="col-xs-6">
+                            <div class="btn-danger"  onclick="marketOrder(1)">Sell</div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="cancelContainer">
+                        
+                         <div calss = "row" style="overflow:hidden;">
+                            <div class = "col-xs-4">
+                                <label>OrderId:</label>
+                            </div>
+                            <div class = "col-xs-8">
+                                <input type="text" id="orderIdText"/>
+                            </div>
+                            
+                        </div>
+                        <div style="padding-top: 20px;">
+                            
+                            <div class="btn-primary"  onclick="submitCancel()">Cancel</div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </td>
+            
+        </tr>
+    </table>
+</div>
+
+    <div class="bidaskcontainer">
+        <table class ="table table-bordered">
+            
+<thead>
+    <tr>
+      <th scope="col" style="">B5</th>
+      <th scope="col" style="">B4</th>
+      <th scope="col" style="">B3</th>
+      <th scope="col" style="">B2</th>
+      <th scope="col" style="">B1</th>
+      <th scope="col" style="">A1</th>
+      <th scope="col" style="">A2</th>
+      <th scope="col" style="">A3</th>
+      <th scope="col" style="">A4</th>
+      <th scope="col" style="">A5</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id="1bidaskRow">
+      <td id="B5" style="background-color:blue"></td>
+      <td id="B4" style="background-color:blue"></td>
+      <td id="B3" style="background-color:blue"></td>
+      <td id="B2" style="background-color:blue"></td>
+      <td id="B1" style="background-color:blue"></td>
+      <td id="A1" style="background-color:red"></td>
+      <td id="A2" style="background-color:red"></td>
+      <td id="A3" style="background-color:red"></td>
+      <td id="A4" style="background-color:red"></td>
+      <td id="A5" style="background-color:red"></td>      
+    </tr>
+    <tr id="2bidaskRow" style="color:white;">
+      <td id="B5amount" style="background-color:blue"></td>
+      <td id="B4amount" style="background-color:blue"></td>
+      <td id="B3amount" style="background-color:blue"></td>
+      <td id="B2amount" style="background-color:blue"></td>
+      <td id="B1amount" style="background-color:blue"></td>
+      <td id="A1amount" style="background-color:red"></td>
+      <td id="A2amount" style="background-color:red"></td>
+      <td id="A3amount" style="background-color:red"></td>
+      <td id="A4amount" style="background-color:red"></td>
+      <td id="A5amount" style="background-color:red"></td>      
+    </tr>
+    <tr id="3bidaskRow">
+      <td id="B5-1" ></td>
+      <td id="B4-1" ></td>
+      <td id="B3-1" ></td>
+      <td id="B2-1" ></td>
+      <td id="B1-1" ></td>
+      <td id="A1-1" ></td>
+      <td id="A2-1" ></td>
+      <td id="A3-1" ></td>
+      <td id="A4-1" ></td>
+      <td id="A5-1" ></td>       
+    </tr>
+    <tr id="4bidaskRow">
+      <td id="B5-2" ></td>
+      <td id="B4-2" ></td>
+      <td id="B3-2" ></td>
+      <td id="B2-2" ></td>
+      <td id="B1-2" ></td>
+      <td id="A1-2" ></td>
+      <td id="A2-2" ></td>
+      <td id="A3-2" ></td>
+      <td id="A4-2" ></td>
+      <td id="A5-2" ></td>       
+    </tr>
+    <tr id="5bidaskRow">
+      <td id="B5-3" ></td>
+      <td id="B4-3" ></td>
+      <td id="B3-3" ></td>
+      <td id="B2-3" ></td>
+      <td id="B1-3" ></td>
+      <td id="A1-3" ></td>
+      <td id="A2-3" ></td>
+      <td id="A3-3" ></td>
+      <td id="A4-3" ></td>
+      <td id="A5-3" ></td>       
+    </tr>
+    <tr id="6bidaskRow">
+      <td id="B5-4" ></td>
+      <td id="B4-4" ></td>
+      <td id="B3-4" ></td>
+      <td id="B2-4" ></td>
+      <td id="B1-4" ></td>
+      <td id="A1-4" ></td>
+      <td id="A2-4" ></td>
+      <td id="A3-4" ></td>
+      <td id="A4-4" ></td>
+      <td id="A5-4" ></td>       
+    </tr>
+    <tr id="7bidaskRow">
+      <td id="B5-5" ></td>
+      <td id="B4-5" ></td>
+      <td id="B3-5" ></td>
+      <td id="B2-5" ></td>
+      <td id="B1-5" ></td>
+      <td id="A1-5" ></td>
+      <td id="A2-5" ></td>
+      <td id="A3-5" ></td>
+      <td id="A4-5" ></td>
+      <td id="A5-5" ></td>       
+    </tr>
+  </tbody>
+        </table>
+        </div>
+    </div>
+</div>
     <script>  
-        var connectionForm = document.getElementById("connectionForm");  
-        var connectionUrl = document.getElementById("connectionUrl");  
-        var connectButton = document.getElementById("connectButton");  
-        var stateLabel = document.getElementById("stateLabel");  
-        var sendMessage = document.getElementById("sendMessage");  
-        var sendButton = document.getElementById("sendButton");  
-        var sendForm = document.getElementById("sendForm");  
-        var commsLog = document.getElementById("commsLog");  
-        var socket;  
-        var scheme = document.location.protocol == "https:" ? "wss" : "ws";  
-        var port = document.location.port ? (":" + document.location.port) : "";  
-        connectionUrl.value = scheme + "://" + document.location.hostname + port + "/ws";  
-  
-        function updateState() {  
-            function disable() {  
-                sendMessage.disabled = true;  
-                sendButton.disabled = true;  
-                closeButton.disabled = true;  
-            }  
-  
-            function enable() {  
-                sendMessage.disabled = false;  
-                sendButton.disabled = false;  
-                closeButton.disabled = false;  
-            }  
-  
-            connectionUrl.disabled = true;  
-            connectButton.disabled = true;  
-  
-            if (!socket) {  
-                disable();  
-            } else {  
-                switch (socket.readyState) {  
-                    case WebSocket.CLOSED:  
-                        stateLabel.innerHTML = "Closed";  
-                        disable();  
-                        connectionUrl.disabled = false;  
-                        connectButton.disabled = false;  
-                        break;  
-                    case WebSocket.CLOSING:  
-                        stateLabel.innerHTML = "Closing...";  
-                        disable();  
-                        break;  
-                    case WebSocket.CONNECTING:  
-                        stateLabel.innerHTML = "Connecting...";  
-                        disable();  
-                        break;  
-                    case WebSocket.OPEN:  
-                        stateLabel.innerHTML = "Open";  
-                        enable();  
-                        break;  
-                    default:  
-                        stateLabel.innerHTML = "Unknown WebSocket State: " + socket.readyState;  
-                        disable();  
-                        break;  
-                }  
-            }  
-        }  
-  
-        closeButton.onclick = function () {  
-            if (!socket || socket.readyState != WebSocket.OPEN) {  
-                alert("socket not connected");  
-            }  
-            socket.close(1000, "Closing from client");  
-        }  
-  
-        sendButton.onclick = function () {  
-            if (!socket || socket.readyState != WebSocket.OPEN) {  
-                alert("socket not connected");  
-            }  
-            var data = sendMessage.value;  
-            socket.send(data);  
-            commsLog.innerHTML += '<tr>' +  
-                '<td class="commslog-client">Client</td>' +  
-                '<td class="commslog-server">Server</td>' +  
-                '<td class="commslog-data">' + data + '</td>'  
-            '</tr>';  
-        }  
-  
-        connectButton.onclick = function () {  
-            stateLabel.innerHTML = "Connecting";  
-            socket = new WebSocket(connectionUrl.value);  
-            socket.onopen = function (event) {  
-                updateState();  
-                commsLog.innerHTML += '<tr>' +  
-                    '<td colspan="3" class="commslog-data">Connection opened</td>' +  
-                    '</tr>';  
-            };  
-  
-            socket.onclose = function (event) {  
-                updateState();  
-                commsLog.innerHTML += '<tr>' +  
-                    '<td colspan="3" class="commslog-data">Connection closed. Code: ' + event.code + '. Reason: ' + event.reason + '</td>' +  
-                    '</tr>';  
-            };  
-  
-            socket.onerror = updateState;  
-            socket.onmessage = function (event) {  
-                commsLog.innerHTML += '<tr>' +  
-                    '<td class="commslog-server">Server</td>' +  
-                    '<td class="commslog-client">Client</td>' +  
-                    '<td class="commslog-data">' + event.data + '</td>'  
-                '</tr>';  
-            };  
-        };  
+        
+$(document).ready(function() {
+    //get the first time bid ask by ajax update 
+        $.get("home/getFirstBidAsk", function(data, status){
+            var jobj = jQuery.parseJSON(data);
+            cleanbidask();
+            changebidask(jobj);
+        });
+       
+});
+function submitCancel(){
+    var orderId = $("#orderIdText").val();
+    if(orderId == null || orderId.trim() == ""){
+         alert("Please enter correct value");
+         return ;
+    }
+    else{
+         let postData = {"orderId":orderId};
+        $.ajax({
+            type: 'POST',
+            
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "home/cancelOrder",
+            data: JSON.stringify(postData),
+            success: function(result){
+                if(result.bidask!=null && result.bidask!="{}"){
+                        var bidaskobj = jQuery.parseJSON(result.bidask);
+                        cleanbidask();
+                        changebidask(bidaskobj);
+                       
+                 }
+                else{
+                    alert("Please enter correct value");
+                    return ;
+                }
+             
+            }
+        });
+    }
+}
+function marketOrder(e){
+    var amountText = $("#marketOrderAmount").val();
+    if(amountText ==null || amountText.trim()==""){
+            alert("Please enter correct value");
+            return false;
+    }
+    else{
+        if ((amount=parseFloat(amountText))==NaN){
+            alert("Please enter correct value");
+            return false;
+        }       
+    }
+    var buy =true;
+    if(e == 0){
+        buy = true;
+    }
+    else{
+        buy=false;
+    }
+ 
+        let postData = {"amount":amount,"buy":buy};
+        $.ajax({
+            type: 'POST',
+            
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "home/marketOrder",
+            data: JSON.stringify(postData),
+            success: function(result){
+                if(result.bidask!=null){
+                        var bidaskobj = jQuery.parseJSON(result.bidask);
+                        cleanbidask();
+                        changebidask(bidaskobj);
+                       
+                    }
+                var executePriceList = result.executedPrice;
+                if(!executePriceList.includes("{}")){
+                    var executedOrderobj = jQuery.parseJSON(result.executedPrice);
+                    changeDealText(executedOrderobj);
+                }
+             
+            }
+        });
+                
+    
+    
+}
+function limitedOrder(e){
+    var allPass = true;
+    var priceText = $("#limitedOrderPrice").val();
+    var amountText = $("#limitedOrderAmount").val();
+    var price =0 ;
+    var amount = 0;
+    var url = "";
+    if(e == 0){
+var url = "home/buyLimitedOrder";
+    }
+    else{
+        var url = "home/sellLimitedOrder";
+    }
+    
+    if(priceText ==null || priceText.trim()==""){
+            allPass =false;
+    }
+    else{
+        if ((price=parseFloat(priceText))==NaN){
+            allPass =false;
+        }
+    }
+    if(amountText ==null || amountText.trim()==""){
+            allPass =false;
+    }
+    else{
+        if ((amount=parseFloat(amountText))==NaN){
+            allPass =false;
+        }
+       
+    }
+    if(allPass){
+        let postData = {"price":price,"amount":amount};
+        $.ajax({
+            type: 'POST',
+            
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: url,
+            data: JSON.stringify(postData),
+            success: function(result){
+                if(result.bidask!=null){
+                        var bidaskobj = jQuery.parseJSON(result.bidask);
+                        cleanbidask();
+                        changebidask(bidaskobj);
+                       
+                    }
+                var executePriceList = result.executedPrice;
+                if(!executePriceList.includes("{}")){
+                    var executedOrderobj = jQuery.parseJSON(result.executedPrice);
+                    changeDealText(executedOrderobj);
+                }
+                if(document.getElementById('requireId').checked){
+                alert("order: "+result.orderId );
+                }
+             
+            }
+        });
+                
+    }
+    else{
+        alert("Please enter correct value");
+    }
+}
+function changeInputType(){
+     var selected = $("#inputtypeselect").val();
+        $(".limitedContainer").css('display','none');
+        $(".marketContainer").css('display','none');
+        $(".cancelContainer").css('display','none');
+     switch(selected){
+         case 'limited':
+          $(".limitedContainer").css('display','block');
+         break;
+         case 'market':
+           $(".marketContainer").css('display','block');
+         break;
+         case 'cancel':
+          $(".cancelContainer").css('display','block');
+         break;
+     }
+}
+function changeDealText(executedOrderobj){
+    var dealText = $("#dealText").text();
+                     $.each(executedOrderobj, function(i, item) { 
+                        dealText += item.Price+"("+item.Amount+")\n";
+                     }); 
+                     if (dealText.length>1000){
+                         var exceed  = dealText.length -1000;
+                         dealText = dealText.substring(exceed);
+                     }
+         $("#dealText").text(dealText);
+         var dealTextarea =document.getElementById('dealText');
+         dealTextarea.scrollTop = dealTextarea.scrollHeight;
+
+}
+function changebidask(jobj){
+      $.each(jobj.Bid, function(i, item) {  
+                var currentNo = i+1;                           
+                $("#B"+currentNo).text(item.Price);
+               
+                $("#B"+currentNo+"amount").text(item.Amount);
+                $.each(item.UserId,function(j, item) {
+                        var currentId =j+1;
+                        if(currentId>5){
+                            return false;
+                        }
+                        item=item.replace("(","\n(");
+                        $("#B"+currentNo+"-"+currentId).text(item);
+                });
+            });
+            $.each(jobj.Ask, function(i, item) {
+                var currentNo = i+1;              
+                $("#A"+currentNo).text(item.Price);
+                $("#A"+currentNo+"amount").text(item.Amount);
+                $.each(item.UserId,function(j, item) {
+                        var currentId =j+1;
+                        if(currentId>5){
+                            return false;
+                        }
+                        item= item.replace("(","\n(");
+                        $("#A"+currentNo+"-"+currentId).text(item);
+                });
+            });
+}
+function cleanbidask(){
+    for(var i = 1 ; i<6;i++){
+        $("#B"+i).text("");
+        $("#B"+i+"amount").text("");
+        for(var j = 1;j<6;j++){
+         $("#B"+i+"-"+j).text("");
+         $("#A"+i+"-"+j).text("");
+        }
+        $("#A"+i).text("");
+        $("#A"+i+"amount").text("");
+       
+    }
+}
+ // Let us open a web socket
+               var ws = new WebSocket("ws://localhost:5000/ws");
+				
+               ws.onopen = function() {
+                  
+                  // Web Socket is connected, send data using send()
+                 
+               };
+				
+               ws.onmessage = function (evt) { 
+                  if(evt.data!=null){
+                      var result = jQuery.parseJSON(evt.data);
+                      if(result.bidask!=null){
+                           var bidaskobj = jQuery.parseJSON(result.bidask);
+                           cleanbidask();
+                        changebidask(bidaskobj);
+                      }
+                      var executePriceList = result.executedPrice;
+                      if(executePriceList!=null){
+                if(!executePriceList.includes("{}")){
+                        var executedOrderobj = jQuery.parseJSON(result.executedPrice);
+                        changeDealText(executedOrderobj);
+                    }
+                      }
+                  }
+                  
+               };
+				
+               ws.onclose = function() { 
+                  
+                  // websocket is closed.
+                  alert("Connection is closed..."); 
+               };
+       
     </script>  
-</body>  
-</html>  

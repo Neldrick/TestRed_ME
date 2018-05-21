@@ -15,7 +15,7 @@ namespace WSModules{
             await base.OnConnected(socket);
 
             var socketId = WSConnectionManager.GetId(socket);
-            await SendMessageToAllAsync($"{socketId} is now connected");
+          //  await SendMessageToAllAsync($"{socketId} is now connected");
         }
         public override async Task ReceiveAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer)
         {

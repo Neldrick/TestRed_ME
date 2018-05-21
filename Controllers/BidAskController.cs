@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using StackExchange.Redis;
+using TestRed_ME.Modules;
 using WSModules;
 
 namespace TestRed_ME.Controllers{
@@ -13,14 +15,17 @@ namespace TestRed_ME.Controllers{
         }
         [HttpGet]
         public async Task Get(){
-            
+            OrderResult  oResult= new OrderResult();
             using (var connection = ConnectionMultiplexer.Connect($"127.0.0.1:6379")){
                     var redisDb = connection.GetDatabase();
-                    RedisValue[] values = {"BTCUSD","1","10"};
-                    string  result = (string)redisDb.Execute("queryfirstbidask",values);
-                    chatRoomHandler.SendMessageToAllAsync(result);
+                    
+                    oResult.bidask = (string)redisDb.Execute(
+                        "queryfirstbidask",new object[] {"BTCUSD","0","5"});
+                    
 
             }
+            chatRoomHandler.SendMessageToAllAsync(JsonConvert.SerializeObject(oResult));
+       
            
         }
         
